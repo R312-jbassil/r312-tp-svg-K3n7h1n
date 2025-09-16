@@ -1,0 +1,19 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const res = await fetch("http://127.0.0.1:8090/api/collections/svgs/records?page=1&perPage=50");
+const data = await res.json();
+const svgs = data.items;
+---
+
+<Layout>
+  <h1>Mes SVG sauvegardés</h1>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    {svgs.map(svg => (
+      <div class="card bg-base-100 shadow-xl p-4">
+        <h2 class="text-lg font-bold">{svg.name}</h2>
+        <div class="border p-2 mt-2" set:html={svg.code}></div>
+      </div>
+    ))}
+  </div>
+</Layout>

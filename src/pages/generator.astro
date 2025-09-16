@@ -20,6 +20,11 @@ import Layout from "../layouts/Layout.astro";
       <h1 class="text-4xl font-bold text-base-content mb-2">Générateur SVG</h1>
       <p class="text-lg text-base-content/70">Décrivez votre SVG et laissez l'IA le créer pour vous</p>
     </div>
+    <!-- bouton save -->
+     <button class="btn btn-success btn-lg" id="saveBtn" disabled>
+    Enregistrer SVG
+  </button>
+</div>
 
     <!-- Section 1: Input avec textarea et bouton -->
     <div class="card bg-base-100 shadow-xl">
@@ -135,12 +140,19 @@ import Layout from "../layouts/Layout.astro";
     generateButton.disabled = true;
 
     try {
-      const svgCode = await generateSVG(prompt);
-      console.log('svgCode: ', svgCode);
+  const svgCode = await generateSVG(prompt);
+  console.log('svgCode: ', svgCode);
 
-      svgOutput.classList.remove("hidden");
-      svgOutput.textContent = svgCode;
-      svgContainer.innerHTML = svgCode;
+  svgOutput.classList.remove("hidden");
+  svgOutput.textContent = svgCode;
+  svgContainer.innerHTML = svgCode;
+
+  // enable save and copy buttons when we have generated SVG code
+  const saveBtn = document.getElementById("saveBtn");
+  const copyBtn = document.getElementById("copyBtn");
+  const hasCode = svgCode && String(svgCode).trim().length > 0;
+  if (saveBtn) saveBtn.disabled = !hasCode;
+  if (copyBtn) copyBtn.disabled = !hasCode;
     } catch (err) {
       console.error(err);
       svgContainer.innerHTML = "<p class='text-error'>Erreur lors de la génération du SVG</p>";
@@ -153,6 +165,88 @@ import Layout from "../layouts/Layout.astro";
   if (generateButton) {
     generateButton.addEventListener("click", handleSubmit);
   }
+
+  async function saveSVG(name, code) {
+  const res = await fetch("http://127.0.0.1:8090/api/collections/svgs/records", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      // seulement si l’utilisateur est connecté :
+      // "Authorization": `Bearer ${pb.authStore.token}`
+    },
+    body: JSON.stringify({
+      name: name,
+      code: code
+    }),
+  });
+
+  if (!res.ok) {
+    throw new Error("Erreur lors de l'enregistrement du SVG");
+  }
+
+  return await res.json();
+}
+
+async function handleSave() {
+  const svgOutput = document.getElementById("codeOutput");
+  const code = svgOutput.textContent;
+
+  if (!code || !String(code).trim()) {
+    alert("Aucun code SVG disponible. Générer un SVG d'abord.");
+    return;
+  }
+
+  const name = prompt("Choisissez un nom pour votre SVG :");
+  if (!name) return;
+
+  try {
+    const saved = await saveSVG(name, code);
+    console.log("SVG enregistré :", saved);
+    alert("SVG sauvegardé avec succès !");
+  } catch (err) {
+    console.error(err);
+    // si la sauvegarde distante échoue, proposer le téléchargement local
+    console.error(err);
+    const shouldDownload = confirm("Impossible d'enregistrer sur le serveur. Voulez-vous télécharger le SVG localement ?");
+    if (shouldDownload) {
+      // create blob and trigger download
+      const blob = new Blob([code], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = name.replace(/[^a-z0-9-_\.]/gi, '_') + '.svg';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } else {
+      alert("SVG non sauvegardé.");
+    }
+  }
+}
+
+const saveButton = document.getElementById("saveBtn");
+if (saveButton) {
+  saveButton.addEventListener("click", handleSave);
+}
+
+// copy button handler
+const copyButton = document.getElementById("copyBtn");
+if (copyButton) {
+  copyButton.addEventListener("click", async () => {
+    const svgOutput = document.getElementById("codeOutput");
+    const code = svgOutput ? svgOutput.textContent : null;
+    if (!code) return alert('Aucun code à copier.');
+    try {
+      await navigator.clipboard.writeText(code);
+      alert('Code SVG copié dans le presse-papiers');
+    } catch (err) {
+      console.error(err);
+      alert('Impossible de copier le code.');
+    }
+  });
+}
+
 </script>
 
 </Layout>
