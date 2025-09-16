@@ -109,37 +109,50 @@ import Layout from "../layouts/Layout.astro";
   </div>
 
  <script>
-    //@ts-nocheck
-	
-	async function generateSVG(prompt) {
-		console.log('Generating SVG for prompt:', prompt);
-		const res = await fetch('/api/generateSVG', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ prompt }),
-		});
-		const data = await res.json();
-		return data.svg;
-	}
+  //@ts-nocheck
+  async function generateSVG(prompt) {
+    console.log('Generating SVG for prompt:', prompt);
+    const res = await fetch('/api/generateSVG', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt }),
+    });
+    const data = await res.json();
+    return data.svg;
+  }
 
-	async function handleSubmit() {
-        let prompt = "";
-        let svgCode = "";
-        const promptElement = document.getElementById("user-prompt");
-        prompt = promptElement ? promptElement.value : "";
-        console.log('submitted: ', prompt); // message affiché sur votre console d'inspecteur dans le navigateur
-        const svgContainer = document.getElementById("svg-container");
-        let svgOutput = document.getElementById("svg-output");
-        svgCode = await generateSVG(prompt);
-        console.log('svgCode: ', svgCode);
-        svgOutput.textContent = svgCode;
-        svgContainer.innerHTML = svgCode;
-        generateButton.disabled = false;
+  async function handleSubmit() {
+    const promptElement = document.getElementById("promptInput");
+    const svgOutput = document.getElementById("codeOutput");
+    const svgContainer = document.getElementById("svgPreview");
+    const generateButton = document.getElementById("generateBtn");
 
-	}
-    const generateButton = document.getElementById("generate-button");
-	if (generateButton) {
-		generateButton.addEventListener("click", handleSubmit);
-	}
+    let prompt = promptElement ? promptElement.value : "";
+    console.log('submitted: ', prompt);
+
+    // état loading
+    svgContainer.innerHTML = `<span class="loading loading-ring loading-xl"></span>`;
+    generateButton.disabled = true;
+
+    try {
+      const svgCode = await generateSVG(prompt);
+      console.log('svgCode: ', svgCode);
+
+      svgOutput.classList.remove("hidden");
+      svgOutput.textContent = svgCode;
+      svgContainer.innerHTML = svgCode;
+    } catch (err) {
+      console.error(err);
+      svgContainer.innerHTML = "<p class='text-error'>Erreur lors de la génération du SVG</p>";
+    } finally {
+      generateButton.disabled = false;
+    }
+  }
+
+  const generateButton = document.getElementById("generateBtn");
+  if (generateButton) {
+    generateButton.addEventListener("click", handleSubmit);
+  }
 </script>
+
 </Layout>
