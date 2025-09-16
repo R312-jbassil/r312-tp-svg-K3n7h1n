@@ -1,3 +1,3 @@
 - Nom:Locatelli
 - Prenom: Enzo
-- Netlify:
+- Netlify: https://jolly-horse-7a6c75.netlify.app/generator
