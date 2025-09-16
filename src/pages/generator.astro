@@ -3,17 +3,7 @@ import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout>
-  <div class="navbar bg-base-100 shadow-lg">
-    <div class="navbar-start">
-      <a class="btn btn-ghost text-xl" href="/">SVG Generator</a>
-    </div>
-    <div class="navbar-center">
-      <ul class="menu menu-horizontal px-1">
-        <li><a href="/" class="btn btn-ghost">Home</a></li>
-        <li><a href="/generator" class="btn btn-ghost btn-active">Generator</a></li>
-      </ul>
-    </div>
-  </div>
+  
 
   <div class="container mx-auto p-4 space-y-6">
     <div class="text-center mb-8">
@@ -169,18 +159,13 @@ import Layout from "../layouts/Layout.astro";
   async function saveSVG(name, code) {
   const res = await fetch("http://127.0.0.1:8090/api/collections/svgs/records", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      // seulement si l’utilisateur est connecté :
-      // "Authorization": `Bearer ${pb.authStore.token}`
-    },
-    body: JSON.stringify({
-      name: name,
-      code: code
-    }),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name: name, code: code }),
   });
 
   if (!res.ok) {
+    const errorData = await res.json(); // ← récupère le détail
+    console.error("Erreur PocketBase:", errorData);
     throw new Error("Erreur lors de l'enregistrement du SVG");
   }
 
