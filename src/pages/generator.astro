@@ -1,0 +1,145 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout>
+  <div class="navbar bg-base-100 shadow-lg">
+    <div class="navbar-start">
+      <a class="btn btn-ghost text-xl" href="/">SVG Generator</a>
+    </div>
+    <div class="navbar-center">
+      <ul class="menu menu-horizontal px-1">
+        <li><a href="/" class="btn btn-ghost">Home</a></li>
+        <li><a href="/generator" class="btn btn-ghost btn-active">Generator</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container mx-auto p-4 space-y-6">
+    <div class="text-center mb-8">
+      <h1 class="text-4xl font-bold text-base-content mb-2">Générateur SVG</h1>
+      <p class="text-lg text-base-content/70">Décrivez votre SVG et laissez l'IA le créer pour vous</p>
+    </div>
+
+    <!-- Section 1: Input avec textarea et bouton -->
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title text-2xl mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+          </svg>
+          Prompt
+        </h2>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Décrivez le SVG que vous souhaitez générer</span>
+          </label>
+          <textarea 
+            class="textarea textarea-bordered h-32 resize-none" 
+            placeholder="Ex: Un chat bleu avec des yeux verts, assis sur une chaise rouge..."
+            id="promptInput"
+          ></textarea>
+        </div>
+        <div class="card-actions justify-end mt-4">
+          <button class="btn btn-primary btn-lg" id="generateBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            Générer SVG
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Section 2: Code généré -->
+      <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+          <h2 class="card-title text-xl mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+            </svg>
+            Code SVG
+          </h2>
+          <div class="mockup-code bg-base-200 min-h-96">
+            <pre data-prefix="$" class="text-warning"><code>En attente de génération...</code></pre>
+            <pre id="codeOutput" class="hidden"><code></code></pre>
+          </div>
+          <div class="card-actions justify-end mt-4">
+            <button class="btn btn-outline btn-sm" id="copyBtn" disabled>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+              Copier
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: Affichage du SVG -->
+      <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+          <h2 class="card-title text-xl mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            Aperçu SVG
+          </h2>
+          <div class="border-2 border-dashed border-base-300 rounded-lg min-h-96 flex items-center justify-center bg-base-50" id="svgPreview">
+            <div class="text-center text-base-content/50">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto mb-4 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <p class="text-lg font-medium">Votre SVG apparaîtra ici</p>
+              <p class="text-sm">Entrez un prompt et cliquez sur "Générer SVG"</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section d'état/loading -->
+    <div class="card bg-base-100 shadow-xl hidden" id="loadingCard">
+      <div class="card-body text-center">
+        <div class="loading loading-spinner loading-lg mx-auto"></div>
+        <p class="text-lg font-medium">Génération en cours...</p>
+        <p class="text-sm text-base-content/70">Veuillez patienter pendant que l'IA crée votre SVG</p>
+      </div>
+    </div>
+  </div>
+
+ <script>
+    //@ts-nocheck
+	
+	async function generateSVG(prompt) {
+		console.log('Generating SVG for prompt:', prompt);
+		const res = await fetch('/api/generateSVG', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ prompt }),
+		});
+		const data = await res.json();
+		return data.svg;
+	}
+
+	async function handleSubmit() {
+        let prompt = "";
+        let svgCode = "";
+        const promptElement = document.getElementById("user-prompt");
+        prompt = promptElement ? promptElement.value : "";
+        console.log('submitted: ', prompt); // message affiché sur votre console d'inspecteur dans le navigateur
+        const svgContainer = document.getElementById("svg-container");
+        let svgOutput = document.getElementById("svg-output");
+        svgCode = await generateSVG(prompt);
+        console.log('svgCode: ', svgCode);
+        svgOutput.textContent = svgCode;
+        svgContainer.innerHTML = svgCode;
+        generateButton.disabled = false;
+
+	}
+    const generateButton = document.getElementById("generate-button");
+	if (generateButton) {
+		generateButton.addEventListener("click", handleSubmit);
+	}
+</script>
+</Layout>
