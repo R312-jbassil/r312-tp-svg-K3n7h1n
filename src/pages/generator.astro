@@ -14,7 +14,7 @@ import Layout from "../layouts/Layout.astro";
     </button>
   </div>
 
-  <!-- Section 1: Input avec textarea et bouton -->
+  <!-- Section 1: Input avec textarea et boutons -->
   <div class="card bg-base-100 shadow-xl">
     <div class="card-body">
       <h2 class="card-title text-2xl mb-4">
@@ -33,12 +33,17 @@ import Layout from "../layouts/Layout.astro";
           id="user-prompt"
         ></textarea>
       </div>
-      <div class="card-actions justify-end mt-4">
+      <div class="card-actions justify-end mt-4 space-x-2">
         <button class="btn btn-primary btn-lg" id="generateBtn">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
           Générer SVG
+        </button>
+
+        <!-- Nouveau bouton Edit -->
+        <button class="btn btn-secondary btn-lg" id="editBtn">
+          ✏️ Edit
         </button>
       </div>
     </div>
@@ -69,7 +74,7 @@ import Layout from "../layouts/Layout.astro";
       </div>
     </div>
 
-    <!-- Section 3: Affichage du SVG -->
+    <!-- Section 3: Aperçu SVG -->
     <div class="card bg-base-100 shadow-xl">
       <div class="card-body">
         <h2 class="card-title text-xl mb-4">
@@ -96,17 +101,14 @@ import Layout from "../layouts/Layout.astro";
         body: JSON.stringify({ messages: promptList }),
       });
       const data = await res.json();
-      return { role: "assistant", content: data.svg };
+      return data.svg;
     }
 
+    // --- Submit (nouvelle génération) ---
     async function handleSubmit() {
-      let prompt = "";
-      let aiResponse = "";
-      const promptElement = document.getElementById("user-prompt");
-      prompt = promptElement ? promptElement.value : "";
+      let prompt = document.getElementById("user-prompt")?.value || "";
       console.log("submitted: ", prompt);
 
-      // Réinitialiser la liste des prompts
       promptList.length = 0; 
       promptList.push({ role: "user", content: prompt });
 
@@ -114,31 +116,22 @@ import Layout from "../layouts/Layout.astro";
       const svgOutput = document.getElementById("codeOutput");
       const generateButton = document.getElementById("generateBtn");
 
-      // Afficher un spinner
       svgContainer.innerHTML = `<span class="loading loading-ring loading-xl"></span>`;
       generateButton.disabled = true;
 
-      // Appeler la fonction pour générer le SVG
-      aiResponse = await generateSVG(promptList);
+      const aiResponse = await generateSVG(promptList);
 
-      // Extraire le SVG de la réponse
-      const svgMatch = aiResponse.content.match(/<svg[\s\S]*?<\/svg>/i);
+      const svgMatch = aiResponse.content?.match(/<svg[\s\S]*?<\/svg>/i);
       aiResponse.content = svgMatch ? svgMatch[0] : "";
 
-      console.log("svgCode: ", aiResponse.content);
-
-      // Ajouter la réponse de l'IA à la liste des prompts
       promptList.push(aiResponse);
 
-      // Afficher le SVG généré
       svgOutput.classList.remove("hidden");
       svgOutput.textContent = aiResponse.content;
       svgContainer.innerHTML = aiResponse.content;
 
-      // Réactiver les boutons
       generateButton.disabled = false;
 
-      // Activer save/copy si SVG dispo
       const saveBtn = document.getElementById("saveBtn");
       const copyBtn = document.getElementById("copyBtn");
       const hasCode = aiResponse.content && String(aiResponse.content).trim().length > 0;
@@ -146,10 +139,50 @@ import Layout from "../layouts/Layout.astro";
       if (copyBtn) copyBtn.disabled = !hasCode;
     }
 
-    const generateButton = document.getElementById("generateBtn");
-    if (generateButton) {
-      generateButton.addEventListener("click", handleSubmit);
+    // --- Edit (continuer édition) ---
+    async function handleEdit() {
+      let prompt = document.getElementById("user-prompt")?.value || "";
+      console.log("Prompt édité: ", prompt);
+
+      promptList.push({ role: "user", content: prompt });
+
+      const svgContainer = document.getElementById("svg-container");
+      const svgOutput = document.getElementById("codeOutput");
+      const editButton = document.getElementById("editBtn");
+      const generateButton = document.getElementById("generateBtn");
+
+      svgContainer.innerHTML = `<span class="loading loading-ring loading-xl"></span>`;
+      generateButton.disabled = true;
+      editButton.disabled = true;
+
+      const aiResponse = await generateSVG(promptList);
+
+      const svgMatch = aiResponse.content?.match(/<svg[\s\S]*?<\/svg>/i);
+      aiResponse.content = svgMatch ? svgMatch[0] : "";
+
+      promptList.push(aiResponse);
+
+      svgOutput.classList.remove("hidden");
+      svgOutput.textContent = aiResponse.content;
+      svgContainer.innerHTML = aiResponse.content;
+
+      generateButton.disabled = false;
+      editButton.disabled = false;
+
+      const saveBtn = document.getElementById("saveBtn");
+      const copyBtn = document.getElementById("copyBtn");
+      const hasCode = aiResponse.content && String(aiResponse.content).trim().length > 0;
+      if (saveBtn) saveBtn.disabled = !hasCode;
+      if (copyBtn) copyBtn.disabled = !hasCode;
+
+      console.log("Historique prompts: ", promptList);
     }
+
+    const generateButton = document.getElementById("generateBtn");
+    if (generateButton) generateButton.addEventListener("click", handleSubmit);
+
+    const editButton = document.getElementById("editBtn");
+    if (editButton) editButton.addEventListener("click", handleEdit);
 
     // --- Save ---
     async function saveSVG(name, code) {
@@ -204,9 +237,7 @@ import Layout from "../layouts/Layout.astro";
     }
 
     const saveButton = document.getElementById("saveBtn");
-    if (saveButton) {
-      saveButton.addEventListener("click", handleSave);
-    }
+    if (saveButton) saveButton.addEventListener("click", handleSave);
 
     // --- Copy ---
     const copyButton = document.getElementById("copyBtn");

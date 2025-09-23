@@ -1,46 +1,40 @@
 // src/pages/api/generate-svg.js
-import { OpenAI } from 'openai';
+import { OpenAI } from "openai";
 
-// Récupération du token d'accès à partir des variables d'environnement
-const HF_TOKEN = import.meta.env.HF_TOKEN;
-const NOM_MODEL = import.meta.env.NOM_MODEL;
+const BASE_URL = import.meta.env.OR_URL;
+const API_KEY = import.meta.env.OR_TOKEN;
 
-// Fonction exportée pour gérer les requêtes POST
 export const POST = async ({ request }) => {
-    console.log(request); // Affiche la requête dans la console pour le débogage
-    
-    // Extraction du prompt du corps de la requête
-    const { prompt } = await request.json();
-    // Initialisation du client OpenAI avec l'URL de base et le token d'API
-    const client = new OpenAI({
-      baseURL: import.meta.env.HF_URL,
-      apiKey: HF_TOKEN,
-    });
-    
-    // ................
-    const chatCompletion = await client.chat.completions.create({
-    model: NOM_MODEL,
-    messages: [
-      {
-          role: "system", 
-          content: "You are an SVG code generator. Generate SVG code for the following prompt." 
-      },
-        {
-            role: "user",
-            content: prompt,    
-        },
-    ],
-  });
-    // ...............
+  const body = await request.json();
+  console.log("Body reçu:", body);
 
-    // Récupération du message généré par l'API
-    const message = chatCompletion.choices[0].message.content || "";
-    console.log('message', message); // Affiche le message généré dans la console pour le débogage
-    
-    // Recherche d'un élément SVG dans le message généré
-    const svgMatch = message.match(/<svg[\s\S]*?<\/svg>/i);
-    // Retourne une réponse JSON contenant le SVG ou une chaîne vide si aucun SVG n'est trouvé
-    return new Response(JSON.stringify({ svg: svgMatch ? svgMatch[0] : "" }), {
-      headers: { "Content-Type": "application/json" },
-    });
+  // Si c’est déjà un tableau → on prend direct
+  // Sinon, on récupère body.messages
+  const messages = Array.isArray(body) ? body : body.messages || [];
+
+  const client = new OpenAI({
+    baseURL: BASE_URL,
+    apiKey: API_KEY,
+  });
+
+  const SystemMessage = {
+    role: "system",
+    content:
+      "You are an SVG code generator. Generate SVG code for the following messages. Make sure to include ids for each part of the generated SVG.",
+  };
+
+  const chatCompletion = await client.chat.completions.create({
+    model: "openai/gpt-oss-20b:free", // <-- mets un vrai modèle ici
+    messages: [SystemMessage, ...messages],
+  });
+
+  const message = chatCompletion.choices[0].message || {};
+  console.log("Generated SVG:", message);
+
+  const svgMatch = message.content?.match(/<svg[\s\S]*?<\/svg>/i);
+  message.content = svgMatch ? svgMatch[0] : "";
+
+  return new Response(JSON.stringify({ svg: message }), {
+    headers: { "Content-Type": "application/json" },
+  });
 };
