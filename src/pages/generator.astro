@@ -141,22 +141,28 @@ import Layout from "../layouts/Layout.astro";
   }
 
   // Fonction pour ajouter un message au chat avec chat bubble DaisyUI
-  function addMessageToChat(content, isUser = true) {
+  function addMessageToChat(content, isUser = true, isSVG = false) {
     const chatContainer = document.getElementById('chat-container');
     
-    // Enlever le message d'info initial s'il existe
+    // Supprimer le message initial si présent
     const initialMessage = chatContainer.querySelector('.flex.justify-center');
-    if (initialMessage) {
-      initialMessage.remove();
-    }
+    if (initialMessage) initialMessage.remove();
     
     const messageDiv = document.createElement('div');
     messageDiv.className = `chat ${isUser ? 'chat-end' : 'chat-start'}`;
     
     const chatBubble = document.createElement('div');
     chatBubble.className = `chat-bubble ${isUser ? 'chat-bubble-primary' : 'chat-bubble-secondary'}`;
-    chatBubble.textContent = content;
     
+    if (isSVG) {
+      const pre = document.createElement('pre');
+      pre.className = 'whitespace-pre-wrap break-all text-xs';
+      pre.textContent = content;
+      chatBubble.appendChild(pre);
+    } else {
+      chatBubble.textContent = content;
+    }
+
     const chatHeader = document.createElement('div');
     chatHeader.className = 'chat-header';
     chatHeader.textContent = isUser ? 'Vous' : 'IA';
@@ -165,7 +171,6 @@ import Layout from "../layouts/Layout.astro";
     messageDiv.appendChild(chatBubble);
     chatContainer.appendChild(messageDiv);
     
-    // Scroll vers le bas
     chatContainer.scrollTop = chatContainer.scrollHeight;
   }
 
@@ -192,12 +197,8 @@ import Layout from "../layouts/Layout.astro";
       return;
     }
     
-    console.log("Génération: ", prompt);
-    
-    // Ajouter le prompt utilisateur au chat
     addMessageToChat(prompt, true);
 
-    // Réinitialiser l'historique pour une nouvelle génération
     promptList.length = 0; 
     promptList.push({ role: "user", content: prompt });
 
@@ -210,7 +211,6 @@ import Layout from "../layouts/Layout.astro";
     try {
       const aiResponse = await generateSVG(promptList);
 
-      // Nettoyer la réponse des balises markdown si nécessaire
       let cleanContent = aiResponse.content;
       if (cleanContent.includes('```svg')) {
         cleanContent = cleanContent.replace(/```svg\s*/, '').replace(/```\s*$/, '');
@@ -219,28 +219,22 @@ import Layout from "../layouts/Layout.astro";
       const svgMatch = cleanContent.match(/<svg[\s\S]*?<\/svg>/i);
       const svgCode = svgMatch ? svgMatch[0] : "";
 
-      // Ajouter la réponse nettoyée à l'historique
       promptList.push({ role: 'assistant', content: svgCode });
       
-      // Ajouter la réponse de l'IA au chat
-      addMessageToChat("SVG généré avec succès !", false);
+      // Ajouter le SVG réel au chat
+      addMessageToChat(svgCode, false, true);
 
       svgContainer.innerHTML = svgCode;
-      
-      // Sauvegarder pour les autres fonctions
       currentSvgCode = svgCode;
 
-      // Activer les boutons
       const saveBtn = document.getElementById("saveBtn");
       const copyBtn = document.getElementById("copyBtn");
       const hasCode = svgCode && svgCode.trim().length > 0;
       if (saveBtn) saveBtn.disabled = !hasCode;
       if (copyBtn) copyBtn.disabled = !hasCode;
       
-      // Vider le champ de saisie
       document.getElementById("user-prompt").value = "";
-      
-      console.log("Historique après génération:", promptList);
+
     } catch (error) {
       console.error("Erreur lors de la génération:", error);
       svgContainer.innerHTML = `<p class="text-error">Erreur lors de la génération du SVG</p>`;
@@ -265,12 +259,7 @@ import Layout from "../layouts/Layout.astro";
       return;
     }
     
-    console.log("Édition: ", prompt);
-    
-    // Ajouter le prompt utilisateur au chat
     addMessageToChat(prompt, true);
-
-    // Ajouter le nouveau prompt à l'historique existant
     promptList.push({ role: "user", content: prompt });
 
     const svgContainer = document.getElementById("svg-container");
@@ -284,7 +273,6 @@ import Layout from "../layouts/Layout.astro";
     try {
       const aiResponse = await generateSVG(promptList);
 
-      // Nettoyer la réponse des balises markdown si nécessaire
       let cleanContent = aiResponse.content;
       if (cleanContent.includes('```svg')) {
         cleanContent = cleanContent.replace(/```svg\s*/, '').replace(/```\s*$/, '');
@@ -293,28 +281,20 @@ import Layout from "../layouts/Layout.astro";
       const svgMatch = cleanContent.match(/<svg[\s\S]*?<\/svg>/i);
       const svgCode = svgMatch ? svgMatch[0] : "";
 
-      // Ajouter la réponse nettoyée à l'historique
       promptList.push({ role: 'assistant', content: svgCode });
       
-      // Ajouter la réponse de l'IA au chat
-      addMessageToChat("SVG modifié avec succès !", false);
-
+      addMessageToChat(svgCode, false, true);
       svgContainer.innerHTML = svgCode;
-      
-      // Sauvegarder pour les autres fonctions
       currentSvgCode = svgCode;
 
-      // Activer les boutons
       const saveBtn = document.getElementById("saveBtn");
       const copyBtn = document.getElementById("copyBtn");
       const hasCode = svgCode && svgCode.trim().length > 0;
       if (saveBtn) saveBtn.disabled = !hasCode;
       if (copyBtn) copyBtn.disabled = !hasCode;
 
-      // Vider le champ de saisie
       document.getElementById("user-prompt").value = "";
 
-      console.log("Historique après édition:", promptList);
     } catch (error) {
       console.error("Erreur lors de l'édition:", error);
       svgContainer.innerHTML = `<p class="text-error">Erreur lors de l'édition du SVG</p>`;
@@ -336,13 +316,9 @@ import Layout from "../layouts/Layout.astro";
       return;
     }
     
-    // Copier le prompt dans le textarea principal
     document.getElementById("user-prompt").value = prompt;
-    
-    // Vider l'input du chat
     chatInput.value = "";
     
-    // Décider si c'est une génération ou une édition
     if (promptList.length === 0) {
       await handleSubmit();
     } else {
@@ -350,7 +326,7 @@ import Layout from "../layouts/Layout.astro";
     }
   }
 
-  // Event listeners pour les boutons
+  // Event listeners
   const generateButton = document.getElementById("generateBtn");
   if (generateButton) generateButton.addEventListener("click", handleSubmit);
 
@@ -360,13 +336,10 @@ import Layout from "../layouts/Layout.astro";
   const sendPromptButton = document.getElementById("sendPromptBtn");
   if (sendPromptButton) sendPromptButton.addEventListener("click", handleChatPrompt);
 
-  // Event listener pour l'input du chat (Enter pour envoyer)
   const chatInput = document.getElementById("chat-input");
   if (chatInput) {
     chatInput.addEventListener("keypress", function(e) {
-      if (e.key === "Enter") {
-        handleChatPrompt();
-      }
+      if (e.key === "Enter") handleChatPrompt();
     });
   }
 
@@ -393,7 +366,6 @@ import Layout from "../layouts/Layout.astro";
 
   async function handleSave() {
     const code = currentSvgCode;
-
     if (!code || !String(code).trim()) {
       alert("Aucun code SVG disponible. Générer un SVG d'abord.");
       return;
@@ -404,8 +376,6 @@ import Layout from "../layouts/Layout.astro";
 
     try {
       const saved = await saveSVG(name, code, promptList);
-      console.log("SVG enregistré:", saved);
-      console.log("Prompt sauvegardé:", getLastUserPrompt(promptList));
       addMessageToChat(`SVG "${name}" sauvegardé avec succès !`, false);
       alert("SVG sauvegardé avec succès !");
     } catch (err) {
@@ -448,5 +418,6 @@ import Layout from "../layouts/Layout.astro";
     });
   }
 </script>
+
 
 </Layout>
