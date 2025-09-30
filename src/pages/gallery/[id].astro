@@ -1,0 +1,60 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import pb from "../../utils/pb";
+import { Collections, type SvgRecord } from "../../utils/pocketbase-types";
+
+const id = Astro.params.id;
+let svg: SvgRecord | undefined = undefined;
+
+try {
+  svg = await pb.collection(Collections.Svg).getOne(id);
+} catch {
+  svg = undefined;
+}
+
+let history: { role: string; content: string }[] = [];
+
+if (svg) {
+  try {
+    history = JSON.parse(svg.chat_history || "[]");
+  } catch {
+    history = svg.chat_history
+      ? [{ role: "user", content: svg.chat_history }]
+      : [];
+  }
+}
+console.log("History:", history);
+---
+<Layout>
+  <section class="p-6 space-y-6">
+    <h1 class="text-2xl font-bold">SVG Gallery Item</h1>
+
+    <!-- Message si collection vide ou SVG non trouvé -->
+    {svg ? (
+      <>
+        <!-- Affichage du SVG -->
+        <div class="border p-4 rounded bg-gray-100">
+          <div class="svg-container" set:html={svg.code}></div>
+        </div>
+
+        <!-- Affichage de l’historique -->
+        <div class="space-y-2">
+          <h2 class="text-xl font-semibold">Historique</h2>
+         <ul class="list-disc pl-6">
+           {history.length > 0 ? (
+             history.map((entry) => (
+         <li>
+        <strong>{entry.role} :</strong> {entry.content}
+      </li>
+    ))
+  ) : (
+    <li>Aucun historique trouvé.</li>
+  )}
+</ul>
+        </div>
+      </>
+    ) : (
+      <div class="text-red-500">Aucune donnée SVG trouvée pour cet identifiant.</div>
+    )}
+  </section>
+</Layout>

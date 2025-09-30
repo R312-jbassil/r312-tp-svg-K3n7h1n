@@ -13,6 +13,7 @@ const svgs = data.items;
       <div class="card bg-base-100 shadow-xl p-4">
         <h2 class="text-lg font-bold">{svg.name}</h2>
         <div class="border p-2 mt-2" set:html={svg.code}></div>
+        <a href={`/gallery/${svg.id}`} class="btn btn-primary mt-4">Voir les détails</a>
       </div>
     ))}
   </div>
