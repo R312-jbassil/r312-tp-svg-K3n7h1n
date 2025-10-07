@@ -9,5 +9,6 @@ declare namespace App {
       avatar?: string;
       verified?: boolean;
     };
+    lang?: 'en' | 'fr';
   }
 }

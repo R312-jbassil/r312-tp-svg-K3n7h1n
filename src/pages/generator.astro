@@ -1,12 +1,15 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { ui } from "../i18n/ui.js";
+
+const locale = (Astro.locals.lang as 'en' | 'fr') ?? 'en';
 ---
 
 <Layout>
   <div class="container mx-auto p-4 space-y-6">
     <div class="text-center mb-8">
-      <h1 class="text-4xl font-bold text-base-content mb-2">Générateur SVG</h1>
-      <p class="text-lg text-base-content/70">Décrivez votre SVG et laissez l'IA le créer pour vous</p>
+      <h1 class="text-4xl font-bold text-base-content mb-2">{ui[locale].generator.title}</h1>
+      <p class="text-lg text-base-content/70">{ui[locale].generator.subtitle}</p>
     </div>
   </div>
 
@@ -17,15 +20,15 @@ import Layout from "../layouts/Layout.astro";
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
         </svg>
-        Prompt
+        {ui[locale].generator.promptTitle}
       </h2>
       <div class="form-control">
         <label class="label">
-          <span class="label-text">Décrivez le SVG que vous souhaitez générer</span>
+          <span class="label-text">{ui[locale].generator.promptLabel}</span>
         </label>
         <textarea 
           class="textarea textarea-bordered h-32 resize-none" 
-          placeholder="Ex: Un chat bleu avec des yeux verts, assis sur une chaise rouge..."
+          placeholder={ui[locale].generator.promptPlaceholder}
           id="user-prompt"
         ></textarea>
       </div>
@@ -34,17 +37,17 @@ import Layout from "../layouts/Layout.astro";
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
-          Générer SVG
+          {ui[locale].generator.generateButton}
         </button>
 
         <!-- Nouveau bouton Edit -->
         <button class="btn btn-secondary btn-lg" id="editBtn">
-          ✏️ Edit
+          ✏️ {ui[locale].generator.editButton}
         </button>
 
         <!-- Bouton save -->
         <button class="btn btn-success btn-lg" id="saveBtn" disabled>
-          Enregistrer SVG
+          {ui[locale].generator.saveButton}
         </button>
       </div>
     </div>
@@ -60,15 +63,15 @@ import Layout from "../layouts/Layout.astro";
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
-          Aperçu SVG
+          {ui[locale].generator.previewTitle}
         </h2>
         
         <!-- Divider selon DaisyUI -->
-        <div class="divider">SVG généré</div>
+        <div class="divider">{ui[locale].generator.previewDivider}</div>
         
         <!-- Zone d'affichage du SVG -->
         <div class="border-2 border-dashed border-base-300 rounded-lg min-h-96 flex items-center justify-center bg-base-50" id="svg-container">
-          <p class="text-lg font-medium text-base-content/50">Votre SVG apparaîtra ici</p>
+          <p class="text-lg font-medium text-base-content/50">{ui[locale].generator.previewPlaceholder}</p>
         </div>
         
         <!-- Actions pour le SVG -->
@@ -77,7 +80,7 @@ import Layout from "../layouts/Layout.astro";
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
             </svg>
-            Copier
+            {ui[locale].generator.copyButton}
           </button>
         </div>
       </div>
@@ -90,26 +93,26 @@ import Layout from "../layouts/Layout.astro";
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
           </svg>
-          Historique des échanges
+          {ui[locale].generator.chatTitle}
         </h2>
         
         <!-- Divider selon DaisyUI -->
-        <div class="divider">Conversation</div>
+        <div class="divider">{ui[locale].generator.chatDivider}</div>
         
         <!-- Zone de chat avec chat bubbles selon DaisyUI -->
         <div class="h-96 overflow-y-auto bg-base-50 rounded-lg p-4" id="chat-container">
           <div class="flex justify-center">
-            <p class="text-sm text-base-content/50">L'historique des prompts apparaîtra ici</p>
+            <p class="text-sm text-base-content/50">{ui[locale].generator.chatPlaceholder}</p>
           </div>
         </div>
         
         <!-- Zone d'entrée pour nouveaux prompts -->
-        <div class="divider">Envoyez un nouveau prompt</div>
+        <div class="divider">{ui[locale].generator.chatInputDivider}</div>
         <div class="form-control">
           <div class="input-group">
             <input 
               type="text" 
-              placeholder="Entrez un prompt pour l'IA..." 
+              placeholder={ui[locale].generator.chatInputPlaceholder}
               class="input input-bordered flex-1" 
               id="chat-input"
             />

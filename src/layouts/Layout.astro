@@ -1,5 +1,8 @@
 ---
 import "../styles/global.css";
+import { ui } from "../i18n/ui.js";
+
+const locale = (Astro.locals.lang as 'en' | 'fr') ?? 'en';
 ---
 <!doctype html>
 <html lang="en" data-theme="light" class="h-full">
@@ -12,12 +15,19 @@ import "../styles/global.css";
 	</head>
 	<div class="navbar-center">
       <ul class="menu menu-horizontal px-1">
-        <li><a href="/" class="btn btn-ghost">Home</a></li>
-        <li><a href="/generator" class="btn btn-ghost">Generator</a></li>
-        <li><a href="/my-svg" class="btn btn-ghost">My SVGs</a></li>
+        <li><a href="/" class="btn btn-ghost">{ui[locale].nav.home}</a></li>
+        <li><a href="/generator" class="btn btn-ghost">{ui[locale].nav.generator}</a></li>
+        <li><a href="/my-svg" class="btn btn-ghost">{ui[locale].nav.mySvgs}</a></li>
 		<form method="POST" action="/api/logout" class="m-0 p-0 ml-4">
-    <button type="submit" class="btn btn-primary">Logout</button>
+    <button type="submit" class="btn btn-primary">{ui[locale].nav.logout}</button>
 </form>
+		<form method="POST" action={Astro.url.pathname} class="m-0 p-0 ml-4">
+			<select name="language" class="select" onchange="this.form.submit()">
+				<option value="en" selected={locale === "en"}>English</option>
+				<option value="fr" selected={locale === "fr"}>Français</option>
+			</select>
+		</form>
+
 
       </ul>
     </div>

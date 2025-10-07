@@ -2,6 +2,9 @@
 import Layout from "../layouts/Layout.astro";
 import pb from "../utils/pb";
 import { Collections, type SvgsResponse } from "../utils/pocketbase-types";
+import { ui } from "../i18n/ui.js";
+
+const locale = (Astro.locals.lang as 'en' | 'fr') ?? 'en';
 
 // Récupère l'utilisateur connecté
 const user = Astro.locals.user;
@@ -21,13 +24,13 @@ const svgs = await pb
 ---
 
 <Layout>
-  <h1>Mes SVG sauvegardés</h1>
+  <h1>{ui[locale].mySvgs.title}</h1>
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     {svgs.map((svg: SvgsResponse) => (
       <div class="card bg-base-100 shadow-xl p-4">
         <h2 class="text-lg font-bold">{svg.name}</h2>
         <div class="border p-2 mt-2" set:html={svg.code}></div>
-        <a href={`/gallery/${svg.id}`} class="btn btn-primary mt-4">Voir les détails</a>
+        <a href={`/gallery/${svg.id}`} class="btn btn-primary mt-4">{ui[locale].mySvgs.viewDetails}</a>
       </div>
     ))}
   </div>
