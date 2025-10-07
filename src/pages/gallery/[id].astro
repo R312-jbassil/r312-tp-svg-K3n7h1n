@@ -1,15 +1,17 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import pb from "../../utils/pb";
-import { Collections, type SvgRecord } from "../../utils/pocketbase-types";
+import { Collections, type SvgsRecord } from "../../utils/pocketbase-types";
 
 const id = Astro.params.id;
-let svg: SvgRecord | undefined = undefined;
+let svg: SvgsRecord | undefined = undefined;
 
-try {
-  svg = await pb.collection(Collections.Svg).getOne(id);
-} catch {
-  svg = undefined;
+if (id) {
+  try {
+    svg = await pb.collection(Collections.Svgs).getOne(id);
+  } catch {
+    svg = undefined;
+  }
 }
 
 let history: { role: string; content: string }[] = [];

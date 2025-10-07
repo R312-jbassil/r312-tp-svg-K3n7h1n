@@ -1,15 +1,29 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import pb from "../utils/pb";
+import { Collections, type SvgsResponse } from "../utils/pocketbase-types";
 
-const res = await fetch("http://127.0.0.1:8090/api/collections/svgs/records?page=1&perPage=50");
-const data = await res.json();
-const svgs = data.items;
+// Récupère l'utilisateur connecté
+const user = Astro.locals.user;
+
+// Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
+if (!user) {
+  return Astro.redirect("/login");
+}
+
+// Récupère uniquement les SVGs créés par l'utilisateur connecté
+const svgs = await pb
+  .collection(Collections.Svgs)
+  .getFullList({
+    sort: "-created", // Trie les SVGs du plus récent au plus ancien
+    filter: `user = "${user.id}"`, // Filtre pour n'afficher que les SVGs de l'utilisateur
+  });
 ---
 
 <Layout>
   <h1>Mes SVG sauvegardés</h1>
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    {svgs.map(svg => (
+    {svgs.map((svg: SvgsResponse) => (
       <div class="card bg-base-100 shadow-xl p-4">
         <h2 class="text-lg font-bold">{svg.name}</h2>
         <div class="border p-2 mt-2" set:html={svg.code}></div>

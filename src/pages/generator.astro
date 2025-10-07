@@ -125,6 +125,7 @@ import Layout from "../layouts/Layout.astro";
   </div>
 
 <script>
+  //@ts-nocheck
   // Variables globales
   let currentSvgCode = '';
   let promptList = [];
@@ -344,14 +345,15 @@ import Layout from "../layouts/Layout.astro";
   }
 
   // --- Sauvegarde dans PocketBase ---
-  async function saveSVG(name, code, chat_history) {
+  async function saveSVG(name, code, chat_history, userId) {
     const res = await fetch("http://127.0.0.1:8090/api/collections/svgs/records", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ 
         name: name, 
         code: code,
-        chat_history: getLastUserPrompt(promptList)
+        chat_history: getLastUserPrompt(promptList),
+        user: userId
       }),
     });
 
@@ -371,11 +373,25 @@ import Layout from "../layouts/Layout.astro";
       return;
     }
 
+    // Récupération de l'utilisateur depuis le localStorage
+    const userStr = localStorage.getItem("user");
+    if (!userStr) {
+      alert("Vous devez être connecté pour sauvegarder un SVG.");
+      window.location.href = "/login";
+      return;
+    }
+
+    const user = JSON.parse(userStr);
+    if (!user.id) {
+      alert("Erreur : informations utilisateur invalides.");
+      return;
+    }
+
     const name = prompt("Choisissez un nom pour votre SVG :");
     if (!name) return;
 
     try {
-      const saved = await saveSVG(name, code, promptList);
+      const saved = await saveSVG(name, code, promptList, user.id);
       addMessageToChat(`SVG "${name}" sauvegardé avec succès !`, false);
       alert("SVG sauvegardé avec succès !");
     } catch (err) {
