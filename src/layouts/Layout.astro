@@ -57,34 +57,34 @@ const locale = (Astro.locals.lang as 'en' | 'fr') ?? 'en';
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
 							</svg>
 						</label>
-						<ul tabindex="0" class="dropdown-content z-[1] p-2 shadow-2xl bg-base-300 rounded-box w-52 max-h-96 overflow-y-auto">
-							<li class="menu-title">Thème</li>
-							<li><button data-set-theme="light" class="theme-selector">🌞 Light</button></li>
-							<li><button data-set-theme="dark" class="theme-selector">🌙 Dark</button></li>
-							<li><button data-set-theme="cupcake" class="theme-selector">🧁 Cupcake</button></li>
-							<li><button data-set-theme="bumblebee" class="theme-selector">🐝 Bumblebee</button></li>
-							<li><button data-set-theme="emerald" class="theme-selector">💎 Emerald</button></li>
-							<li><button data-set-theme="corporate" class="theme-selector">🏢 Corporate</button></li>
-							<li><button data-set-theme="synthwave" class="theme-selector">🌃 Synthwave</button></li>
-							<li><button data-set-theme="retro" class="theme-selector">📼 Retro</button></li>
-							<li><button data-set-theme="cyberpunk" class="theme-selector">🤖 Cyberpunk</button></li>
-							<li><button data-set-theme="valentine" class="theme-selector">💝 Valentine</button></li>
-							<li><button data-set-theme="halloween" class="theme-selector">🎃 Halloween</button></li>
-							<li><button data-set-theme="garden" class="theme-selector">🌷 Garden</button></li>
-							<li><button data-set-theme="forest" class="theme-selector">🌲 Forest</button></li>
-							<li><button data-set-theme="aqua" class="theme-selector">💧 Aqua</button></li>
-							<li><button data-set-theme="lofi" class="theme-selector">🎵 Lofi</button></li>
-							<li><button data-set-theme="pastel" class="theme-selector">🎨 Pastel</button></li>
-							<li><button data-set-theme="fantasy" class="theme-selector">✨ Fantasy</button></li>
-							<li><button data-set-theme="wireframe" class="theme-selector">📐 Wireframe</button></li>
-							<li><button data-set-theme="black" class="theme-selector">⚫ Black</button></li>
-							<li><button data-set-theme="luxury" class="theme-selector">👑 Luxury</button></li>
-							<li><button data-set-theme="dracula" class="theme-selector">🧛 Dracula</button></li>
-							<li><button data-set-theme="autumn" class="theme-selector">🍂 Autumn</button></li>
-							<li><button data-set-theme="business" class="theme-selector">💼 Business</button></li>
-							<li><button data-set-theme="night" class="theme-selector">🌌 Night</button></li>
-							<li><button data-set-theme="coffee" class="theme-selector">☕ Coffee</button></li>
-							<li><button data-set-theme="winter" class="theme-selector">❄️ Winter</button></li>
+						<ul tabindex="0" class="menu dropdown-content z-[1] p-2 shadow-2xl bg-base-300 rounded-box w-52 max-h-96 overflow-y-auto">
+							<li class="menu-title"><span>Choisir un thème</span></li>
+							<li><a data-set-theme="light" class="theme-selector active:bg-primary">🌞 Light</a></li>
+							<li><a data-set-theme="dark" class="theme-selector active:bg-primary">🌙 Dark</a></li>
+							<li><a data-set-theme="cupcake" class="theme-selector active:bg-primary">🧁 Cupcake</a></li>
+							<li><a data-set-theme="bumblebee" class="theme-selector active:bg-primary">🐝 Bumblebee</a></li>
+							<li><a data-set-theme="emerald" class="theme-selector active:bg-primary">💎 Emerald</a></li>
+							<li><a data-set-theme="corporate" class="theme-selector active:bg-primary">🏢 Corporate</a></li>
+							<li><a data-set-theme="synthwave" class="theme-selector active:bg-primary">🌃 Synthwave</a></li>
+							<li><a data-set-theme="retro" class="theme-selector active:bg-primary">📼 Retro</a></li>
+							<li><a data-set-theme="cyberpunk" class="theme-selector active:bg-primary">🤖 Cyberpunk</a></li>
+							<li><a data-set-theme="valentine" class="theme-selector active:bg-primary">💝 Valentine</a></li>
+							<li><a data-set-theme="halloween" class="theme-selector active:bg-primary">🎃 Halloween</a></li>
+							<li><a data-set-theme="garden" class="theme-selector active:bg-primary">🌷 Garden</a></li>
+							<li><a data-set-theme="forest" class="theme-selector active:bg-primary">🌲 Forest</a></li>
+							<li><a data-set-theme="aqua" class="theme-selector active:bg-primary">💧 Aqua</a></li>
+							<li><a data-set-theme="lofi" class="theme-selector active:bg-primary">🎵 Lofi</a></li>
+							<li><a data-set-theme="pastel" class="theme-selector active:bg-primary">🎨 Pastel</a></li>
+							<li><a data-set-theme="fantasy" class="theme-selector active:bg-primary">✨ Fantasy</a></li>
+							<li><a data-set-theme="wireframe" class="theme-selector active:bg-primary">📐 Wireframe</a></li>
+							<li><a data-set-theme="black" class="theme-selector active:bg-primary">⚫ Black</a></li>
+							<li><a data-set-theme="luxury" class="theme-selector active:bg-primary">👑 Luxury</a></li>
+							<li><a data-set-theme="dracula" class="theme-selector active:bg-primary">🧛 Dracula</a></li>
+							<li><a data-set-theme="autumn" class="theme-selector active:bg-primary">🍂 Autumn</a></li>
+							<li><a data-set-theme="business" class="theme-selector active:bg-primary">💼 Business</a></li>
+							<li><a data-set-theme="night" class="theme-selector active:bg-primary">🌌 Night</a></li>
+							<li><a data-set-theme="coffee" class="theme-selector active:bg-primary">☕ Coffee</a></li>
+							<li><a data-set-theme="winter" class="theme-selector active:bg-primary">❄️ Winter</a></li>
 						</ul>
 					</div>
 					
@@ -125,10 +125,23 @@ const locale = (Astro.locals.lang as 'en' | 'fr') ?? 'en';
 			document.addEventListener('DOMContentLoaded', () => {
 				const themeButtons = document.querySelectorAll('.theme-selector');
 				themeButtons.forEach(button => {
-					button.addEventListener('click', () => {
+					button.addEventListener('click', (e) => {
+						e.preventDefault();
 						const newTheme = button.getAttribute('data-set-theme');
 						document.documentElement.setAttribute('data-theme', newTheme);
 						localStorage.setItem('theme', newTheme);
+						
+						// Fermer le dropdown après sélection
+						const dropdown = button.closest('.dropdown');
+						if (dropdown) {
+							const label = dropdown.querySelector('label');
+							if (label) {
+								label.blur();
+							}
+						}
+						
+						// Feedback visuel
+						console.log('Thème changé:', newTheme);
 					});
 				});
 			});
