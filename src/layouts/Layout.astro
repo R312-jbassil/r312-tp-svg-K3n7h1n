@@ -128,8 +128,15 @@ const locale = (Astro.locals.lang as 'en' | 'fr') ?? 'en';
 					button.addEventListener('click', (e) => {
 						e.preventDefault();
 						const newTheme = button.getAttribute('data-set-theme');
+						
+						// Appliquer le thème
 						document.documentElement.setAttribute('data-theme', newTheme);
 						localStorage.setItem('theme', newTheme);
+						
+						// Forcer le recalcul des styles
+						document.body.style.display = 'none';
+						document.body.offsetHeight; // Trigger reflow
+						document.body.style.display = '';
 						
 						// Fermer le dropdown après sélection
 						const dropdown = button.closest('.dropdown');

@@ -21,10 +21,17 @@
   }
 }
 
-/* Transitions fluides pour le changement de thème */
-* {
-  transition-property: background-color, border-color, color, fill, stroke;
-  transition-duration: 200ms;
+/* Transitions fluides pour le changement de thème - appliqué seulement au HTML pour éviter les conflits */
+html {
+  transition-property: background-color, color-scheme;
+  transition-duration: 300ms;
+  transition-timing-function: ease-in-out;
+}
+
+/* Transitions pour les éléments qui utilisent les variables de thème */
+body, .btn, .card, .navbar, .footer, .menu, .badge, .stat, .dropdown-content {
+  transition-property: background-color, border-color, color;
+  transition-duration: 300ms;
   transition-timing-function: ease-in-out;
 }
 

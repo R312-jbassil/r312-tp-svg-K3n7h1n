@@ -45,7 +45,7 @@ module.exports = {
     styled: true,
     utils: true,
     prefix: '',
-    logs: false,
-    themeRoot: ':root',
+    logs: true,
+    themeRoot: 'html',
   },
 };
