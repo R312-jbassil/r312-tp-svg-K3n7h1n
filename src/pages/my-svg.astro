@@ -24,14 +24,59 @@ const svgs = await pb
 ---
 
 <Layout>
-  <h1>{ui[locale].mySvgs.title}</h1>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    {svgs.map((svg: SvgsResponse) => (
-      <div class="card bg-base-100 shadow-xl p-4">
-        <h2 class="text-lg font-bold">{svg.name}</h2>
-        <div class="border p-2 mt-2" set:html={svg.code}></div>
-        <a href={`/gallery/${svg.id}`} class="btn btn-primary mt-4">{ui[locale].mySvgs.viewDetails}</a>
+  <div class="container mx-auto p-3 sm:p-4 md:p-6 lg:p-8">
+    <div class="text-center mb-6 sm:mb-8 md:mb-10">
+      <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-base-content mb-2 sm:mb-3">
+        {ui[locale].mySvgs.title}
+      </h1>
+      <p class="text-sm sm:text-base md:text-lg text-base-content/70 px-4">
+        Retrouvez tous vos SVG créés
+      </p>
+    </div>
+
+    {svgs.length === 0 ? (
+      <div class="flex flex-col items-center justify-center min-h-[50vh] px-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 text-base-content/30 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+        </svg>
+        <h2 class="text-lg sm:text-xl md:text-2xl font-semibold text-base-content/60 mb-2 text-center">
+          Aucun SVG créé pour le moment
+        </h2>
+        <p class="text-sm sm:text-base text-base-content/50 mb-6 text-center">
+          Commencez à créer vos premiers SVG avec notre générateur IA
+        </p>
+        <a href="/generator" class="btn btn-primary btn-sm sm:btn-md lg:btn-lg">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          Créer un SVG
+        </a>
       </div>
-    ))}
+    ) : (
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
+        {svgs.map((svg: SvgsResponse) => (
+          <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+            <div class="card-body p-4 sm:p-5 md:p-6">
+              <h2 class="card-title text-base sm:text-lg md:text-xl truncate" title={svg.name}>
+                {svg.name}
+              </h2>
+              <div class="border-2 border-base-300 rounded-lg p-2 sm:p-3 mt-2 bg-base-50 min-h-[150px] sm:min-h-[180px] md:min-h-[200px] flex items-center justify-center overflow-hidden" set:html={svg.code}></div>
+              <div class="card-actions justify-between items-center mt-3 sm:mt-4 flex-col sm:flex-row gap-2">
+                <div class="badge badge-ghost text-xs">
+                  {new Date(svg.created).toLocaleDateString('fr-FR', { 
+                    day: 'numeric', 
+                    month: 'short',
+                    year: 'numeric'
+                  })}
+                </div>
+                <a href={`/gallery/${svg.id}`} class="btn btn-primary btn-sm w-full sm:w-auto">
+                  {ui[locale].mySvgs.viewDetails}
+                </a>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
   </div>
 </Layout>

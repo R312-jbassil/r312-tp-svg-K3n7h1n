@@ -6,32 +6,73 @@ if (Astro.locals.user) {
 ---
 <html lang="en" data-theme="light">
     <head>
-        <title>Login</title>
-        <meta name="viewport" content="width=device-width" />
+        <title>Login - SVG Generator</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link href="https://cdn.jsdelivr.net/npm/daisyui@3.8.0/dist/full.css" rel="stylesheet" type="text/css" />
         <script src="https://cdn.tailwindcss.com"></script>
     </head>
-    <body class="min-h-screen flex items-center justify-center bg-base-200">
-        <div class="card w-full max-w-md shadow-xl bg-base-100">
-            <div class="card-body">
-                <h1 class="card-title text-3xl mb-4 justify-center">Connexion</h1>
+    <body class="min-h-screen flex items-center justify-center bg-base-200 p-4">
+        <div class="card w-full max-w-sm sm:max-w-md shadow-2xl bg-base-100">
+            <div class="card-body p-4 sm:p-6 md:p-8">
+                <div class="flex justify-center mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 sm:h-16 sm:w-16 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                    </svg>
+                </div>
+                <h1 class="card-title text-2xl sm:text-3xl mb-4 justify-center">Connexion</h1>
+                <p class="text-center text-sm sm:text-base text-base-content/70 mb-4">Connectez-vous pour créer vos SVG</p>
                 <!-- Formulaire de connexion -->
-                <form id="login-form" class="flex flex-col gap-4">
-                    <input type="email" name="email" placeholder="Email" required class="input input-bordered" />
-                    <input type="password" name="password" placeholder="Mot de passe" required class="input input-bordered" />
-                    <button type="submit" class="btn btn-primary w-full">Se connecter</button>
+                <form id="login-form" class="flex flex-col gap-3 sm:gap-4">
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text text-sm sm:text-base">Email</span>
+                        </label>
+                        <input 
+                            type="email" 
+                            name="email" 
+                            placeholder="votre@email.com" 
+                            required 
+                            class="input input-bordered w-full text-sm sm:text-base" 
+                        />
+                    </div>
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text text-sm sm:text-base">Mot de passe</span>
+                        </label>
+                        <input 
+                            type="password" 
+                            name="password" 
+                            placeholder="••••••••" 
+                            required 
+                            class="input input-bordered w-full text-sm sm:text-base" 
+                        />
+                    </div>
+                    <button type="submit" class="btn btn-primary w-full text-sm sm:text-base">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                        </svg>
+                        Se connecter
+                    </button>
                 </form>
                 <!-- Zone d'affichage du statut -->
-                <p id="status" class="mt-4 text-center text-error"></p>
+                <p id="status" class="mt-3 sm:mt-4 text-center text-error text-sm sm:text-base"></p>
                 
                 <!-- Lien vers la page d'inscription -->
-                <div class="divider">OU</div>
+                <div class="divider text-xs sm:text-sm">OU</div>
                 <div class="text-center">
-                    <p class="text-sm text-base-content/70">Pas encore de compte ?</p>
-                    <a href="/signup" class="link link-primary text-sm">Creer un compte</a>
+                    <p class="text-xs sm:text-sm text-base-content/70 mb-2">Pas encore de compte ?</p>
+                    <a href="/signup" class="btn btn-ghost btn-sm w-full sm:w-auto">
+                        Créer un compte
+                    </a>
                 </div>
             </div>
         </div>
+
+        <script is:inline>
+            // Gestion du thème
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        </script>
     </body>
 </html>
 

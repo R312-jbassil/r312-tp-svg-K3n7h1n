@@ -8,34 +8,130 @@ const locale = (Astro.locals.lang as 'en' | 'fr') ?? 'en';
 <html lang="en" data-theme="light" class="h-full">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+		<title>SVG Generator - Create Beautiful SVG Art</title>
+		<meta name="description" content="Generate stunning SVG graphics with AI-powered tools" />
 	</head>
-	<div class="navbar-center">
-      <ul class="menu menu-horizontal px-1">
-        <li><a href="/" class="btn btn-ghost">{ui[locale].nav.home}</a></li>
-        <li><a href="/generator" class="btn btn-ghost">{ui[locale].nav.generator}</a></li>
-        <li><a href="/my-svg" class="btn btn-ghost">{ui[locale].nav.mySvgs}</a></li>
-		<form method="POST" action="/api/logout" class="m-0 p-0 ml-4">
-    <button type="submit" class="btn btn-primary">{ui[locale].nav.logout}</button>
-</form>
-		<form method="POST" action={Astro.url.pathname} class="m-0 p-0 ml-4">
-			<select name="language" class="select" onchange="this.form.submit()">
-				<option value="en" selected={locale === "en"}>English</option>
-				<option value="fr" selected={locale === "fr"}>Français</option>
-			</select>
-		</form>
-
-
-      </ul>
-    </div>
 	<body class="h-full">
 		<div class="h-full flex flex-col min-h-0">
-			<div class="flex-1 min-h-0">
+			<!-- Navbar responsive -->
+			<div class="navbar bg-base-100 shadow-lg sticky top-0 z-50">
+				<div class="navbar-start">
+					<!-- Menu hamburger pour mobile -->
+					<div class="dropdown lg:hidden">
+						<label tabindex="0" class="btn btn-ghost btn-circle">
+							<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+							</svg>
+						</label>
+						<ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+							<li><a href="/">{ui[locale].nav.home}</a></li>
+							<li><a href="/generator">{ui[locale].nav.generator}</a></li>
+							<li><a href="/my-svg">{ui[locale].nav.mySvgs}</a></li>
+						</ul>
+					</div>
+					<!-- Logo -->
+					<a href="/" class="btn btn-ghost normal-case text-xl hidden sm:flex">
+						<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+						</svg>
+						<span class="ml-2 hidden md:inline">SVG Gen</span>
+					</a>
+				</div>
+				
+				<div class="navbar-center hidden lg:flex">
+					<ul class="menu menu-horizontal px-1 gap-1">
+						<li><a href="/" class="btn btn-ghost">{ui[locale].nav.home}</a></li>
+						<li><a href="/generator" class="btn btn-ghost">{ui[locale].nav.generator}</a></li>
+						<li><a href="/my-svg" class="btn btn-ghost">{ui[locale].nav.mySvgs}</a></li>
+					</ul>
+				</div>
+				
+				<div class="navbar-end gap-2">
+					<!-- Sélecteur de thème -->
+					<div class="dropdown dropdown-end">
+						<label tabindex="0" class="btn btn-ghost btn-circle" aria-label="Select Theme">
+							<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+							</svg>
+						</label>
+						<ul tabindex="0" class="dropdown-content z-[1] p-2 shadow-2xl bg-base-300 rounded-box w-52 max-h-96 overflow-y-auto">
+							<li class="menu-title">Thème</li>
+							<li><button data-set-theme="light" class="theme-selector">🌞 Light</button></li>
+							<li><button data-set-theme="dark" class="theme-selector">🌙 Dark</button></li>
+							<li><button data-set-theme="cupcake" class="theme-selector">🧁 Cupcake</button></li>
+							<li><button data-set-theme="bumblebee" class="theme-selector">🐝 Bumblebee</button></li>
+							<li><button data-set-theme="emerald" class="theme-selector">💎 Emerald</button></li>
+							<li><button data-set-theme="corporate" class="theme-selector">🏢 Corporate</button></li>
+							<li><button data-set-theme="synthwave" class="theme-selector">🌃 Synthwave</button></li>
+							<li><button data-set-theme="retro" class="theme-selector">📼 Retro</button></li>
+							<li><button data-set-theme="cyberpunk" class="theme-selector">🤖 Cyberpunk</button></li>
+							<li><button data-set-theme="valentine" class="theme-selector">💝 Valentine</button></li>
+							<li><button data-set-theme="halloween" class="theme-selector">🎃 Halloween</button></li>
+							<li><button data-set-theme="garden" class="theme-selector">🌷 Garden</button></li>
+							<li><button data-set-theme="forest" class="theme-selector">🌲 Forest</button></li>
+							<li><button data-set-theme="aqua" class="theme-selector">💧 Aqua</button></li>
+							<li><button data-set-theme="lofi" class="theme-selector">🎵 Lofi</button></li>
+							<li><button data-set-theme="pastel" class="theme-selector">🎨 Pastel</button></li>
+							<li><button data-set-theme="fantasy" class="theme-selector">✨ Fantasy</button></li>
+							<li><button data-set-theme="wireframe" class="theme-selector">📐 Wireframe</button></li>
+							<li><button data-set-theme="black" class="theme-selector">⚫ Black</button></li>
+							<li><button data-set-theme="luxury" class="theme-selector">👑 Luxury</button></li>
+							<li><button data-set-theme="dracula" class="theme-selector">🧛 Dracula</button></li>
+							<li><button data-set-theme="autumn" class="theme-selector">🍂 Autumn</button></li>
+							<li><button data-set-theme="business" class="theme-selector">💼 Business</button></li>
+							<li><button data-set-theme="night" class="theme-selector">🌌 Night</button></li>
+							<li><button data-set-theme="coffee" class="theme-selector">☕ Coffee</button></li>
+							<li><button data-set-theme="winter" class="theme-selector">❄️ Winter</button></li>
+						</ul>
+					</div>
+					
+					<!-- Sélecteur de langue -->
+					<form method="POST" action={Astro.url.pathname} class="m-0 p-0">
+						<select name="language" class="select select-bordered select-sm" onchange="this.form.submit()">
+							<option value="en" selected={locale === "en"}>🇬🇧 EN</option>
+							<option value="fr" selected={locale === "fr"}>🇫🇷 FR</option>
+						</select>
+					</form>
+					
+					<!-- Bouton logout -->
+					<form method="POST" action="/api/logout" class="m-0 p-0">
+						<button type="submit" class="btn btn-primary btn-sm sm:btn-md">{ui[locale].nav.logout}</button>
+					</form>
+				</div>
+			</div>
+
+			<!-- Contenu principal -->
+			<div class="flex-1 min-h-0 overflow-auto">
 				<slot />
 			</div>
+
+			<!-- Footer -->
+			<footer class="footer footer-center p-4 bg-base-300 text-base-content">
+				<aside>
+					<p class="text-sm">© 2025 SVG Generator - Créé avec ❤️ et Astro</p>
+				</aside>
+			</footer>
 		</div>
+
+		<script is:inline>
+			// Gestion du thème avec localStorage
+			const theme = localStorage.getItem('theme') || 'light';
+			document.documentElement.setAttribute('data-theme', theme);
+
+			// Écouter les changements de thème
+			document.addEventListener('DOMContentLoaded', () => {
+				const themeButtons = document.querySelectorAll('.theme-selector');
+				themeButtons.forEach(button => {
+					button.addEventListener('click', () => {
+						const newTheme = button.getAttribute('data-set-theme');
+						document.documentElement.setAttribute('data-theme', newTheme);
+						localStorage.setItem('theme', newTheme);
+					});
+				});
+			});
+		</script>
 	</body>
 </html>
